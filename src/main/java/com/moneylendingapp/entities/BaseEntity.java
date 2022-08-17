@@ -25,17 +25,5 @@ public abstract class BaseEntity implements Serializable {
 
     @UpdateTimestamp
     private Timestamp lastModifiedOn;
-
-
-
 }
-/** TODO: check how to use the annotations
- * how to make base entity a super class for all my entities
- * edit migration to include the fields from base entity
- * rename the migration
- *
- * ---
- * create a workflow
- *      - anytime there's a pull request to review, run all tests
- *
- */
+
