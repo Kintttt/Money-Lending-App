@@ -1,19 +1,16 @@
-package com.moneylendingapp.model;
+package com.moneylendingapp.entities;
 
 import com.moneylendingapp.enums.Gender;
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table
+@Table(name = "users")
 @Data
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+public class User extends BaseEntity {
+
     private String firstName;
     private String lastName;
 
