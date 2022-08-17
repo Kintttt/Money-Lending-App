@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="1660725967905" author="temitope">
+        <createTable tableName="users">
+
+            <column name="deleted" type="BIT"/>
+            <column name="created_on" type="datetime"/>
+            <column name="last_modified_on" type="datetime"/>
+
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(50)" />
+            <column name="last_name" type="VARCHAR(50)" />
+
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="USERNAME"/>
+            </column>
+
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="password" type="VARCHAR(512)" />
+            <column name="gender" type="VARCHAR(25)" />
+            <column name="dob" type="datetime"/>
+            <column name="phone_number" type="VARCHAR(25)" />
+            <column name="address" type="VARCHAR(255)" />
+            <column name="employment_status" type="BIT"/>
+
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
