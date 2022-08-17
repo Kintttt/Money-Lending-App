@@ -10,9 +10,7 @@ import java.util.Date;
 @Table
 @Data
 public class Users extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long userId;
+
     private String firstName;
     private String lastName;
 
