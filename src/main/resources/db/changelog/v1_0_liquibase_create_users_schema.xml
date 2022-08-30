@@ -30,7 +30,7 @@
             <column name="dob" type="datetime"/>
             <column name="phone_number" type="VARCHAR(25)" />
             <column name="address" type="VARCHAR(255)" />
-            <column name="employment_status" type="BIT"/>
+            <column name="employment_status" type="VARCHAR(30)"/>
 
         </createTable>
     </changeSet>
