@@ -18,6 +18,5 @@ public enum EmploymentStatus {
             }
         }
         throw new BadRequestException("Unable to find any matching status to honor your request for action " + type);
-        //"Unable to find any matching status to honor your request for action - " + type, HttpStatus.NOT_FOUND
     }
 }

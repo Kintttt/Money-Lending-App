@@ -32,7 +32,7 @@ class UserServiceImplTest {
 
     @Test
     void createUser() {
-        //given
+
         User mockedUser = User.builder()
                 .username("Kiint")
                 .firstName("Temi")
@@ -53,36 +53,12 @@ class UserServiceImplTest {
                 .password("1234567")
                 .build();
 
-        //when
         String message = userServiceTest.createUser(newUserRequest);
-        //then
+
         Assertions.assertEquals("User saved successfully", message);
         verify(userRepoTest, times(1)).save(any(User.class));
         verify(userRepoTest, times(1)).findByUsername(anyString());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //        User user = User.builder()
-//                .firstName("Temi")
-//                .lastName("Kint")
-//                .username("Kintt")
-//                .password("123456")
-//                .employmentStatus(CONTRACT)
-//                .email("tems@gmail.com")
-//                .build();
-//        when(userRepoTest.save(user)).thenReturn(user);
-//        assertEquals(user, userServiceTest.createUser(user));
 
 
 }

@@ -32,11 +32,6 @@ public class ControllerExceptionHandler {
         return ex.getMessage();
     }
 
-//    @org.springframework.web.bind.annotation.ExceptionHandler(UnexpectedTypeException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public String handleUnexpectedTypeException(UnexpectedTypeException ex, HttpServletRequest request) {
-//        return ex.getMessage();
-//    }
 
     @ExceptionHandler(value = BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

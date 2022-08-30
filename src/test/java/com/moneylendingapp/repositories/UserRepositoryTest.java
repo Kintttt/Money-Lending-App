@@ -5,9 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.util.Optional;
-
 import static com.moneylendingapp.enums.EmploymentStatus.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,7 +22,7 @@ class UserRepositoryTest {
 
     @Test
     void checkWhenUsernameExistsTest() {
-        //given
+
         String username = "Kintt";
         User user = User.builder()
                 .firstName("Temi")
@@ -36,18 +34,17 @@ class UserRepositoryTest {
                 .build();
 
         userRepoTest.save(user);
-        //when
+
         Optional<User> usernameCheck = userRepoTest.findByUsername(username);
-        //then
+
         assertThat(usernameCheck).isPresent();
     }
 
     @Test
     void checkWhenUsernameDoesNotExistTest() {
-        //given
+
         String username = "Kintt";
         Optional<User> usernameCheck = userRepoTest.findByUsername(username);
-        //then
         assertThat(usernameCheck).isNotPresent();
     }
 }
