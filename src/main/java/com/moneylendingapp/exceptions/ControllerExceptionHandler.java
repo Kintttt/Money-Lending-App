@@ -40,4 +40,12 @@ public class ControllerExceptionHandler {
         return ex.getMessage();
     }
 
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handException(Exception ex) {
+        log.error("ERROR OCCURRED! " + ex.getMessage());
+        return ex.getMessage();
+    }
+
 }

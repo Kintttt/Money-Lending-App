@@ -8,9 +8,9 @@ import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,10 +18,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public String createUser(SignUpRequest signUpDto) {
+
         validateUsername(signUpDto.getUsername());
         User user = User.builder()
                     .username(signUpDto.getUsername())
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
                     .employmentStatus(EmploymentStatus.get(signUpDto.getEmploymentStatus()))
                     .firstName(signUpDto.getFirstName())
                     .lastName(signUpDto.getLastName())
-                    .password(signUpDto.getPassword())
+                    .password(passwordEncoder.encode(signUpDto.getPassword()))
                     .gender(signUpDto.getGender())
                     .build();
 
@@ -41,11 +42,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUsername(String username) {
-        Optional<User> optionalUser = userRepo.findByUsername(username);
-        if(optionalUser.isPresent()){
-            throw new BadRequestException("Username: " +username +  " is taken");
+        userRepo.findByUsername(username).ifPresent(user ->
+        {throw new BadRequestException("Username: " +username + " is taken");
         }
-    }
+        );
 
+    }
 
 }

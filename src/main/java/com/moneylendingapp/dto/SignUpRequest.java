@@ -11,6 +11,8 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignUpRequest {
 
     @NotBlank(message = "First name required")
@@ -34,6 +36,6 @@ public class SignUpRequest {
     private String phoneNumber;
     private String address;
 
-    @NotBlank(message = "Employment status cannot be blank")
+    @NotNull(message = "Employment status cannot be blank")
     private String employmentStatus;
 }
