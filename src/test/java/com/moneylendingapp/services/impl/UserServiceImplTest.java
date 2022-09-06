@@ -1,7 +1,8 @@
 package com.moneylendingapp.services.impl;
 
 import com.moneylendingapp.TestUtil;
-import com.moneylendingapp.dto.SignUpRequest;
+import com.moneylendingapp.dto.requests.SignUpRequest;
+import com.moneylendingapp.dto.responses.SignUpResponse;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.repositories.UserRepository;
@@ -48,9 +49,9 @@ class UserServiceImplTest {
         Mockito.doReturn(mockedUser)
                 .when(userRepoTest).save(any(User.class));
 
-        String message = userServiceTest.createUser(signUpRequest);
+        SignUpResponse response = userServiceTest.createUser(signUpRequest);
 
-        Assertions.assertEquals("User saved successfully", message);
+        Assertions.assertEquals("Jane", response.getFirstName());
 
         verify(userRepoTest).save(any(User.class));
         verify(userRepoTest).findByUsername(anyString());

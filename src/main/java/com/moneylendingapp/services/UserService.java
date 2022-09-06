@@ -1,7 +1,8 @@
 package com.moneylendingapp.services;
 
-import com.moneylendingapp.dto.SignUpRequest;
+import com.moneylendingapp.dto.requests.SignUpRequest;
+import com.moneylendingapp.dto.responses.SignUpResponse;
 
 public interface UserService {
-    String createUser(SignUpRequest signUpDto);
+    SignUpResponse createUser(SignUpRequest signUpDto);
 }

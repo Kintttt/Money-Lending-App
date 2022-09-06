@@ -1,7 +1,8 @@
 package com.moneylendingapp.services.impl;
 
+import com.moneylendingapp.dto.responses.SignUpResponse;
 import com.moneylendingapp.exceptions.BadRequestException;
-import com.moneylendingapp.dto.SignUpRequest;
+import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.repositories.UserRepository;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public String createUser(SignUpRequest signUpDto) {
+    public SignUpResponse createUser(SignUpRequest signUpDto) {
 
         validateUsername(signUpDto.getUsername());
         User user = User.builder()
@@ -32,21 +33,33 @@ public class UserServiceImpl implements UserService {
                     .employmentStatus(EmploymentStatus.get(signUpDto.getEmploymentStatus()))
                     .firstName(signUpDto.getFirstName())
                     .lastName(signUpDto.getLastName())
-                    .password(passwordEncoder.encode(signUpDto.getPassword()))
+                    .password(
+                            passwordEncoder.encode(signUpDto.getPassword()))
                     .gender(signUpDto.getGender())
                     .build();
 
-
             userRepo.save(user);
-            return "User saved successfully";
+
+        SignUpResponse response = SignUpResponse.builder()
+                .username(signUpDto.getUsername())
+                .address(signUpDto.getAddress())
+                .dob(signUpDto.getDob())
+                .email(signUpDto.getEmail())
+                .employmentStatus(signUpDto.getEmploymentStatus())
+                .firstName(signUpDto.getFirstName())
+                .lastName(signUpDto.getLastName())
+                .gender(signUpDto.getGender())
+                .build();
+
+            return response;
     }
 
     private void validateUsername(String username) {
         userRepo.findByUsername(username).ifPresent(user ->
-        {throw new BadRequestException("Username: " +username + " is taken");
-        }
+                {
+                    throw new BadRequestException("Username: " + username + " is taken");
+                }
         );
-
     }
 
 }

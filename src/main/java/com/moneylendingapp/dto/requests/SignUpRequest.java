@@ -1,4 +1,4 @@
-package com.moneylendingapp.dto;
+package com.moneylendingapp.dto.requests;
 
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Gender;
@@ -36,6 +36,6 @@ public class SignUpRequest {
     private String phoneNumber;
     private String address;
 
-    @NotNull(message = "Employment status cannot be blank")
+    @NotBlank(message = "Employment status cannot be blank")
     private String employmentStatus;
 }
