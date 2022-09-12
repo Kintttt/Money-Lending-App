@@ -31,8 +31,11 @@ public class SignUpRequest {
     @Size(min = 5, max = 15, message = "Character length must be between 5 and 15")
     private String password;
     private Gender gender;
+
+    @Future
     private Date dob;
 
+    @Min(11)
     private String phoneNumber;
     private String address;
 

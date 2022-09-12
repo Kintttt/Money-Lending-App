@@ -2,6 +2,7 @@ package com.moneylendingapp.advice;
 
 import com.moneylendingapp.exceptions.BadRequestException;
 import liquibase.repackaged.org.apache.commons.lang3.NotImplementedException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -10,19 +11,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Slf4j
 public class ErrorControllerAdvice {
+
+    private final Clock clock;
 
     private ApiResponseEnvelope buildErrorResponse(Object error) {
         return ApiResponseEnvelope.builder()
                 .successStatus(false)
-                .timeStamp(LocalDateTime.now())
+                .timeStamp(LocalDateTime.now(clock))
                 .errorMessage(Collections.singletonList(error))
                 .build();
     }
