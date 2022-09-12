@@ -11,6 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class SignUpResponse {
 
+    private Long id;
+
     private String firstName;
 
     private String lastName;

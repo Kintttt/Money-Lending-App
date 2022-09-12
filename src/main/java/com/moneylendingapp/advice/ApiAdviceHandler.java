@@ -1,6 +1,8 @@
 package com.moneylendingapp.advice;
 
 import com.moneylendingapp.exceptions.BadRequestException;
+import jdk.jshell.spi.ExecutionControl;
+import liquibase.repackaged.org.apache.commons.lang3.NotImplementedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -42,11 +44,16 @@ public class ApiAdviceHandler implements ResponseBodyAdvice<Object> {
         return buildErrorResponse(response);
     }
 
-
-
     @ExceptionHandler(value = IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponseEnvelope handleIllegalStateException(IllegalStateException ex) {
+        log.error(ex.getMessage());
+        return buildErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = NotImplementedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponseEnvelope handleNotImplementedException(NotImplementedException ex) {
         log.error(ex.getMessage());
         return buildErrorResponse(ex.getMessage());
     }

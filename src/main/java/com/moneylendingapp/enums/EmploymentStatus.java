@@ -1,6 +1,6 @@
 package com.moneylendingapp.enums;
 
-import com.moneylendingapp.exceptions.BadRequestException;
+import liquibase.repackaged.org.apache.commons.lang3.NotImplementedException;
 
 public enum EmploymentStatus {
     SELF_EMPLOYED,
@@ -17,6 +17,6 @@ public enum EmploymentStatus {
                 return status;
             }
         }
-        throw new BadRequestException("Unable to find any matching status to honor your request for action " + type);
+        throw new NotImplementedException("Unable to find any matching status to honor your request for action: " + type);
     }
 }

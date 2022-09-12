@@ -41,6 +41,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
             userRepo.save(user);
 
         SignUpResponse response = SignUpResponse.builder()
+                .id(user.getId())
                 .username(signUpDto.getUsername())
                 .address(signUpDto.getAddress())
                 .dob(signUpDto.getDob())

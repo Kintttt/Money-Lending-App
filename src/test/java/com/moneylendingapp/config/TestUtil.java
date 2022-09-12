@@ -1,4 +1,4 @@
-package com.moneylendingapp;
+package com.moneylendingapp.config;
 
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;

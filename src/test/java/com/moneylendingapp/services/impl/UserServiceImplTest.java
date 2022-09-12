@@ -1,6 +1,6 @@
 package com.moneylendingapp.services.impl;
 
-import com.moneylendingapp.TestUtil;
+import com.moneylendingapp.config.TestUtil;
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.dto.responses.SignUpResponse;
 import com.moneylendingapp.entities.User;
