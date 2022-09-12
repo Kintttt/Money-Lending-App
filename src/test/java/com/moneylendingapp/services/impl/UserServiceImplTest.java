@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -29,7 +30,7 @@ class UserServiceImplTest {
     private UserRepository userRepoTest;
     private DefaultUserService userServiceTest;
     @Mock
-    private final PasswordEncoder passwordEncoder  = new BCryptPasswordEncoder();
+    private PasswordEncoder passwordEncoder;
 
 
     @BeforeEach
@@ -37,6 +38,7 @@ class UserServiceImplTest {
         userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder);
         mockedUser = TestUtil.mockedUser();
         signUpRequest  = TestUtil.newUserRequest();
+        passwordEncoder  = new BCryptPasswordEncoder();
 
     }
 
@@ -45,7 +47,7 @@ class UserServiceImplTest {
     void createUserTest() {
 
         Mockito.doReturn(false)
-                .when(userRepoTest).existsByUsername(anyString());
+                .when(userRepoTest).existsByUsernameIgnoreCase(anyString());
         Mockito.doReturn(mockedUser)
                 .when(userRepoTest).save(any(User.class));
 
@@ -54,18 +56,19 @@ class UserServiceImplTest {
         Assertions.assertEquals("Jane", response.getFirstName());
 
         verify(userRepoTest).save(any(User.class));
-        verify(userRepoTest).existsByUsername(anyString());
+        verify(userRepoTest).existsByUsernameIgnoreCase(anyString());
     }
 
     @Test
     void usernameTakenTest() {
 
-        Mockito.doReturn(true)
-                .when(userRepoTest).existsByUsername(anyString());
+        Mockito.doReturn(false)
+                .when(userRepoTest).existsByUsernameIgnoreCase(anyString());
 
-        Assertions.assertThrows(BadRequestException.class, () -> {
-            userServiceTest.createUser(signUpRequest);
-        }, "Username is taken");
+        assertThatThrownBy(() ->  userServiceTest.createUser(signUpRequest))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Username: " + signUpRequest.getUsername() +" is taken");
+
     }
 
 }

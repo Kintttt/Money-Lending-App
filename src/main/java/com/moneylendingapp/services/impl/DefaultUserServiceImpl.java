@@ -56,7 +56,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     }
 
     private void ensureUserNameIsUnique(String username) {
-        if(userRepo.existsByUsername(username)){
+        if(userRepo.existsByUsernameIgnoreCase(username)){
             throw new BadRequestException(String.format("Username: %s is taken",username));
         }
     }

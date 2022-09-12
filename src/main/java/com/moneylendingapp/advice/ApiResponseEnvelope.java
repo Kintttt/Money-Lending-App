@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class ApiResponseEnvelope {
-    private boolean status;
+    private boolean successStatus;
     private LocalDateTime timeStamp;
     private Object result;
     private List<Object> errorMessage;
