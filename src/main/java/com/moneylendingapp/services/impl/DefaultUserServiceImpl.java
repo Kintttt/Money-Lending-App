@@ -6,25 +6,25 @@ import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.repositories.UserRepository;
-import com.moneylendingapp.services.UserService;
-import lombok.AllArgsConstructor;
+import com.moneylendingapp.services.DefaultUserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class DefaultUserServiceImpl implements DefaultUserService {
 
     private final UserRepository userRepo;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public SignUpResponse createUser(SignUpRequest signUpDto) {
 
-        validateUsername(signUpDto.getUsername());
+        ensureUserNameIsUnique(signUpDto.getUsername());
         User user = User.builder()
                     .username(signUpDto.getUsername())
                     .address(signUpDto.getAddress())
@@ -54,12 +54,10 @@ public class UserServiceImpl implements UserService {
             return response;
     }
 
-    private void validateUsername(String username) {
-        userRepo.findByUsername(username).ifPresent(user ->
-                {
-                    throw new BadRequestException("Username: " + username + " is taken");
-                }
-        );
+    private void ensureUserNameIsUnique(String username) {
+        if(userRepo.existsByUsername(username)){
+            throw new BadRequestException(String.format("Username: %s is taken",username));
+        }
     }
 
 }

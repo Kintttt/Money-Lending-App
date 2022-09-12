@@ -2,7 +2,7 @@ package com.moneylendingapp.controllers;
 
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.dto.responses.SignUpResponse;
-import com.moneylendingapp.services.UserService;
+import com.moneylendingapp.services.DefaultUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final DefaultUserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponse> registerUser(@Validated @RequestBody SignUpRequest signUp) {
-        return new ResponseEntity<>(userService.createUser(signUp), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public SignUpResponse registerUser(@Validated @RequestBody SignUpRequest signUp) {
+        return userService.createUser(signUp);
     }
 }
