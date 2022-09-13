@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class ApiResponseEnvelope {
     private boolean successStatus;
-    private LocalDateTime timeStamp;
+    private LocalDateTime responseDate;
     private Object result;
     private List<Object> errorMessage;
 }

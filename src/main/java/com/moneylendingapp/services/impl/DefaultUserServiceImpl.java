@@ -1,6 +1,6 @@
 package com.moneylendingapp.services.impl;
 
-import com.moneylendingapp.dto.responses.SignUpResponse;
+import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
@@ -22,9 +22,11 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public SignUpResponse createUser(SignUpRequest signUpDto) {
+    public UserModel createUser(SignUpRequest signUpDto) {
 
-        ensureUserNameIsUnique(signUpDto.getUsername());
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+
+        ensureUsernameIsUnique(signUpDto.getUsername());
         User user = User.builder()
                     .username(signUpDto.getUsername())
                     .address(signUpDto.getAddress())
@@ -33,14 +35,12 @@ public class DefaultUserServiceImpl implements DefaultUserService {
                     .employmentStatus(EmploymentStatus.get(signUpDto.getEmploymentStatus()))
                     .firstName(signUpDto.getFirstName())
                     .lastName(signUpDto.getLastName())
-                    .password(
-                            passwordEncoder.encode(signUpDto.getPassword()))
-                    .gender(signUpDto.getGender())
+                    .password(encodedPassword)
                     .build();
 
             userRepo.save(user);
 
-        SignUpResponse response = SignUpResponse.builder()
+        UserModel response = UserModel.builder()
                 .id(user.getId())
                 .username(signUpDto.getUsername())
                 .address(signUpDto.getAddress())
@@ -55,7 +55,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
             return response;
     }
 
-    private void ensureUserNameIsUnique(String username) {
+    private void ensureUsernameIsUnique(String username) {
         if(userRepo.existsByUsernameIgnoreCase(username)){
             throw new BadRequestException(String.format("Username: %s is taken",username));
         }

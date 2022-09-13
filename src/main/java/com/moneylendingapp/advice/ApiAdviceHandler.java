@@ -26,10 +26,14 @@ public class ApiAdviceHandler implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body, MethodParameter returnType,
+                                  MediaType selectedContentType,
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  ServerHttpRequest request, ServerHttpResponse response) {
+
         return body instanceof ApiResponseEnvelope ? body : ApiResponseEnvelope.builder()
                 .result(body)
-                .timeStamp(LocalDateTime.now(clock))
+                .responseDate(LocalDateTime.now(clock))
                 .successStatus(true)
                 .build();
     }

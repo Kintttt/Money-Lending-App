@@ -1,6 +1,5 @@
 package com.moneylendingapp.dto.requests;
 
-import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Gender;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -32,7 +31,7 @@ public class SignUpRequest {
     private String password;
     private Gender gender;
 
-    @Future
+    @Past
     private Date dob;
 
     @Min(11)

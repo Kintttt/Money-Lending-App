@@ -9,7 +9,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpResponse {
+public class UserModel {
 
     private Long id;
 

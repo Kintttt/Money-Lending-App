@@ -1,10 +1,9 @@
 package com.moneylendingapp.integration;
 
 import com.moneylendingapp.MoneyLendingAppApplication;
-import com.moneylendingapp.config.MySqlTestContainerSetup;
 import com.moneylendingapp.config.TestUtil;
 import com.moneylendingapp.dto.requests.SignUpRequest;
-import com.moneylendingapp.dto.responses.SignUpResponse;
+import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.services.DefaultUserService;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -23,29 +21,31 @@ import java.util.Optional;
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = {MoneyLendingAppApplication.class}
 )
-public class UserServiceIntegrationTest extends MySqlTestContainerSetup{
 
-    private User mockedUser;
+public class UserServiceIntegrationTest {
+
     private SignUpRequest signUpRequest;
 
     @Autowired
     private UserRepository userRepoTest;
-    private DefaultUserService userServiceTest;
 
     @Autowired
-    private final PasswordEncoder passwordEncoder  = new BCryptPasswordEncoder();
+    private PasswordEncoder passwordEncoder;
+
+    private DefaultUserService userServiceTest;
+
+
 
     @BeforeEach
     void setUp() {
         userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder);
-        mockedUser = TestUtil.mockedUser();
         signUpRequest  = TestUtil.newUserRequest();
     }
 
     @Test
     void shouldSuccessfullyCreateAUser() {
 
-        SignUpResponse response = userServiceTest.createUser(signUpRequest);
+        UserModel response = userServiceTest.createUser(signUpRequest);
         Optional<User> optionalUser = userRepoTest.findById(response.getId());
 
         Assertions.assertTrue(optionalUser.isPresent());

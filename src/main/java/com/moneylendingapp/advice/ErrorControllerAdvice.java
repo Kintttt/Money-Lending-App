@@ -27,7 +27,7 @@ public class ErrorControllerAdvice {
     private ApiResponseEnvelope buildErrorResponse(Object error) {
         return ApiResponseEnvelope.builder()
                 .successStatus(false)
-                .timeStamp(LocalDateTime.now(clock))
+                .responseDate(LocalDateTime.now(clock))
                 .errorMessage(Collections.singletonList(error))
                 .build();
     }

@@ -2,7 +2,7 @@ package com.moneylendingapp.services.impl;
 
 import com.moneylendingapp.config.TestUtil;
 import com.moneylendingapp.dto.requests.SignUpRequest;
-import com.moneylendingapp.dto.responses.SignUpResponse;
+import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.repositories.UserRepository;
@@ -51,7 +51,7 @@ class UserServiceImplTest {
         Mockito.doReturn(mockedUser)
                 .when(userRepoTest).save(any(User.class));
 
-        SignUpResponse response = userServiceTest.createUser(signUpRequest);
+        UserModel response = userServiceTest.createUser(signUpRequest);
 
         Assertions.assertEquals("Jane", response.getFirstName());
 
@@ -62,7 +62,7 @@ class UserServiceImplTest {
     @Test
     void usernameTakenTest() {
 
-        Mockito.doReturn(false)
+        Mockito.doReturn(true)
                 .when(userRepoTest).existsByUsernameIgnoreCase(anyString());
 
         assertThatThrownBy(() ->  userServiceTest.createUser(signUpRequest))
