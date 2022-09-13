@@ -1,14 +1,19 @@
 package com.moneylendingapp.entities;
 
+import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Gender;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     private String firstName;
@@ -27,7 +32,9 @@ public class User extends BaseEntity {
     private Date dob;
     private String phoneNumber;
     private String address;
-    private boolean employmentStatus;
+
+    @Enumerated(EnumType.STRING)
+    private EmploymentStatus employmentStatus;
 
 
 

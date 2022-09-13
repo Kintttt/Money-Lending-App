@@ -34,4 +34,9 @@
 
         </createTable>
     </changeSet>
+
+
+    <changeSet id="1662472058463" author="temitope">
+        <modifyDataType tableName="users" columnName="employment_status" newDataType="VARCHAR(30)"/>
+    </changeSet>
 </databaseChangeLog>
