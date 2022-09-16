@@ -2,6 +2,7 @@ package com.moneylendingapp.entities;
 
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Gender;
+import com.moneylendingapp.enums.Role;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,7 +37,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;
 
-
+    @Enumerated(EnumType.STRING)
+    private Role roles;
 
 
 }

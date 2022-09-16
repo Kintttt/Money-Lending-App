@@ -1,4 +1,4 @@
-package com.moneylendingapp.security;
+package com.moneylendingapp.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
