@@ -39,4 +39,16 @@
     <changeSet id="1662472058463" author="temitope">
         <modifyDataType tableName="users" columnName="employment_status" newDataType="VARCHAR(30)"/>
     </changeSet>
+
+    
+    <changeSet id="1664733485603" author="temitope">
+        <preConditions>
+                <tableExists tableName="users"/>
+        </preConditions>
+
+        <addColumn tableName="users">
+            <column name="is_email_verified" type="BIT"/>
+            <column name="date_email_verified" type="datetime"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

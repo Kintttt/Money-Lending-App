@@ -1,14 +1,17 @@
 package com.moneylendingapp.services.impl;
 
+import com.moneylendingapp.advice.ApiResponseEnvelope;
 import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.repositories.UserRepository;
+import com.moneylendingapp.services.TokenService;
 import com.moneylendingapp.services.DefaultUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,9 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public UserModel createUser(SignUpRequest signUpDto) {
@@ -52,13 +58,19 @@ public class DefaultUserServiceImpl implements DefaultUserService {
                 .gender(signUpDto.getGender())
                 .build();
 
-            return response;
+        tokenService.saveToken(user);
+        return response;
     }
 
     private void ensureUsernameIsUnique(String username) {
         if(userRepo.existsByUsernameIgnoreCase(username)){
             throw new BadRequestException(String.format("Username: %s is taken",username));
         }
+    }
+
+    @Override
+    public ApiResponseEnvelope confirmToken(String token) {
+        return tokenService.confirmToken(token);
     }
 
 }

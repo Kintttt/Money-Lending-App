@@ -1,5 +1,6 @@
 package com.moneylendingapp.controllers;
 
+import com.moneylendingapp.advice.ApiResponseEnvelope;
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.services.DefaultUserService;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 
 
 @RestController
@@ -20,5 +22,11 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel registerUser(@Validated @RequestBody SignUpRequest signUp) {
         return userService.createUser(signUp);
+    }
+
+    @GetMapping(path = "confirm")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponseEnvelope confirm(@RequestParam("token") String token) {
+        return userService.confirmToken(token);
     }
 }

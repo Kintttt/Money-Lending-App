@@ -1,6 +1,7 @@
 package com.moneylendingapp.advice;
 
 import com.moneylendingapp.exceptions.BadRequestException;
+import com.moneylendingapp.exceptions.UserNotFoundException;
 import liquibase.repackaged.org.apache.commons.lang3.NotImplementedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,12 @@ public class ErrorControllerAdvice {
         return buildErrorResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponseEnvelope handleUserNotFoundException(UserNotFoundException ex) {
+        log.error(ex.getMessage());
+        return buildErrorResponse(ex.getMessage());
+    }
 
     @ExceptionHandler(value = BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -5,6 +5,7 @@ import com.moneylendingapp.enums.Gender;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -36,6 +37,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;
 
+    private boolean isEmailVerified;
+
+    private LocalDateTime dateEmailVerified;
 
 
 
