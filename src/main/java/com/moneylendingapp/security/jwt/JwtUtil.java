@@ -1,20 +1,27 @@
 package com.moneylendingapp.security.jwt;
 
+import com.moneylendingapp.security.jwt.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class JwtUtil {
 
-    private String SECRET_KEY = "secregmjhfkhjgyfhtdgrsdfhgjkhgjfhdgsdtrjykghfnbxdgsehrjtymghfndhgdsdhfjghjbgvcfgdehrftgvcft";
+    private final JwtConfig jwtConfig;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -30,7 +37,7 @@ public class JwtUtil {
     }
 
     public Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(jwtConfig.getSECRET_KEY()).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token){
@@ -44,17 +51,15 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims,String subject){
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() +1000 * 60 * 60 *10))
-                .signWith(SignatureAlgorithm.HS256,SECRET_KEY).compact();
+                .signWith(SignatureAlgorithm.HS256,jwtConfig.getSECRET_KEY()).compact();
     }
 
     public boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUsername(token);
-        System.out.println("username = " + username);
+        log.info("username = {}", username);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }

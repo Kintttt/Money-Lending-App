@@ -1,5 +1,6 @@
 package com.moneylendingapp.dto.responses;
 
+import com.moneylendingapp.enums.Role;
 import lombok.*;
 
 @Getter
@@ -10,5 +11,6 @@ import lombok.*;
 public class LoginResponse {
 
     private Long id;
+    private Role role;
     private String token;
 }

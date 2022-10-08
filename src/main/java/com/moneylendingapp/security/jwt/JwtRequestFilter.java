@@ -1,6 +1,9 @@
 package com.moneylendingapp.security.jwt;
 
+import com.moneylendingapp.security.jwt.JwtConfig;
+import com.moneylendingapp.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,25 +13,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-
     private final JwtUtil jwtUtil;
+    private final JwtConfig jwtConfig;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
         try {
 
-            final String authorizationHeader = request.getHeader("Authorization");
+            final String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
 
             String username = null;
             String jwt = null;
@@ -42,7 +43,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                System.out.println("userDetails = " + userDetails);
+                log.info("userDetails= {}", userDetails);
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
 
@@ -55,7 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             chain.doFilter(request, response);
         }catch (Exception err){
-            System.out.println("err.getMessage() = " + err.getMessage());
+            log.error("Error : {}", err.getMessage());
         }
     }
 

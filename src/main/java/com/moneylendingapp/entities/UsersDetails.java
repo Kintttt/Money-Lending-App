@@ -1,23 +1,21 @@
 package com.moneylendingapp.entities;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@AllArgsConstructor
 public class UsersDetails implements UserDetails {
 
     private final String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UsersDetails(String username) {
-        this.username = username;
-    }
 
     public UsersDetails(User user) {
         this.username = user.getUsername();

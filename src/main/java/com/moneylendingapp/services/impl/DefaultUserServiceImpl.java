@@ -1,29 +1,27 @@
 package com.moneylendingapp.services.impl;
 
 import com.moneylendingapp.dto.requests.LoginRequest;
+import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.dto.responses.LoginResponse;
 import com.moneylendingapp.dto.responses.UserModel;
-import com.moneylendingapp.exceptions.BadRequestException;
-import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
+import com.moneylendingapp.enums.Role;
+import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service
@@ -57,11 +55,12 @@ public class DefaultUserServiceImpl implements DefaultUserService {
                     .firstName(signUpDto.getFirstName())
                     .lastName(signUpDto.getLastName())
                     .password(encodedPassword)
+                    .roles(Role.USER)
                     .build();
 
             userRepo.save(user);
 
-        UserModel response = UserModel.builder()
+        return UserModel.builder()
                 .id(user.getId())
                 .username(signUpDto.getUsername())
                 .address(signUpDto.getAddress())
@@ -72,8 +71,6 @@ public class DefaultUserServiceImpl implements DefaultUserService {
                 .lastName(signUpDto.getLastName())
                 .gender(signUpDto.getGender())
                 .build();
-
-            return response;
     }
 
     private void ensureUsernameIsUnique(String username) {
@@ -86,14 +83,18 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-            final String jwtToken = jwtTokenUtil.generateToken(userDetails);
-            Optional<User> user = userRepo.findByUsername(userDetails.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+            String jwtToken = jwtTokenUtil.generateToken(userDetails);
+            String username = userDetails.getUsername();
+            log.info("Token = {}", jwtToken);
 
-            return LoginResponse.builder().id(user.get().getId()).token(jwtToken).build();
+            User user = userRepo.findByUsername(username)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException(String.format("Username: %s not found", username)));
+
+            return LoginResponse.builder().id(user.getId()).token(jwtToken).role(user.getRoles()).build();
 
         } catch (Exception ex) {
             throw new Exception(ex.getMessage());
