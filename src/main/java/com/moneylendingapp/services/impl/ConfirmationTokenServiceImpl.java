@@ -1,12 +1,12 @@
 package com.moneylendingapp.services.impl;
 
 import com.moneylendingapp.advice.ApiResponseEnvelope;
-import com.moneylendingapp.entities.Token;
+import com.moneylendingapp.entities.ConfirmationToken;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.exceptions.UserNotFoundException;
-import com.moneylendingapp.repositories.TokenRepository;
+import com.moneylendingapp.repositories.ConfirmationTokenRepository;
 import com.moneylendingapp.repositories.UserRepository;
-import com.moneylendingapp.services.TokenService;
+import com.moneylendingapp.services.ConfirmationTokenService;
 import com.moneylendingapp.util.EmailBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +18,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TokenServiceImpl implements TokenService {
+public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
-    private final TokenRepository tokenRepo;
+    private final ConfirmationTokenRepository tokenRepo;
     private final EmailSender emailService;
     private final UserRepository userRepo;
     private final EmailBuilder emailBuilder;
@@ -32,13 +32,13 @@ public class TokenServiceImpl implements TokenService {
         String token = UUID.randomUUID().toString();
         log.info("Token: " + token);
 
-        Token confirmationToken = Token.builder()
+        ConfirmationToken confirmationToken = ConfirmationToken.builder()
                 .userId(user.getId())
                 .id(token)
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .build();
 
-        Token db = tokenRepo.save(confirmationToken);
+        ConfirmationToken db = tokenRepo.save(confirmationToken);
 
         String tokenId = String.valueOf(db.getId());
 
@@ -53,7 +53,7 @@ public class TokenServiceImpl implements TokenService {
     @Transactional
     public ApiResponseEnvelope confirmToken(String token) {
 
-        Token confirmationToken = tokenRepo
+        ConfirmationToken confirmationToken = tokenRepo
                 .findById(token)
                 .orElseThrow(() ->
                         new IllegalStateException("Token not found or is expired"));

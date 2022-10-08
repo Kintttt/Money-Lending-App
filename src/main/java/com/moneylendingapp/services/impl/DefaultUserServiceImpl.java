@@ -7,7 +7,7 @@ import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.repositories.UserRepository;
-import com.moneylendingapp.services.TokenService;
+import com.moneylendingapp.services.ConfirmationTokenService;
 import com.moneylendingapp.services.DefaultUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TokenService tokenService;
+    private ConfirmationTokenService tokenService;
 
     @Override
     public UserModel createUser(SignUpRequest signUpDto) {

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Token{
+public class ConfirmationToken {
 
     @Id
     private String id;
