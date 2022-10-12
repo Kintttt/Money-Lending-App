@@ -1,7 +1,6 @@
 package com.moneylendingapp.security.jwt;
 
-import com.moneylendingapp.security.jwt.JwtConfig;
-import com.moneylendingapp.security.jwt.JwtUtil;
+import com.moneylendingapp.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,7 +38,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 username = jwtUtil.extractUsername(jwt);
             }
 
-
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
@@ -56,7 +54,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             chain.doFilter(request, response);
         }catch (Exception err){
-            log.error("Error : {}", err.getMessage());
+            log.error("Error: Invalid jwt token. {}", err.getMessage());
+            throw new UserNotFoundException("Error:  Invalid jwt token");
         }
     }
 

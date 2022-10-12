@@ -8,6 +8,7 @@ import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Role;
 import com.moneylendingapp.exceptions.BadRequestException;
+import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
@@ -81,22 +82,32 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
+
+        User user = userRepo.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(String.format("Username: %s not found", loginRequest.getUsername())));
+
+        return authenticateUser(loginRequest, user);
+    }
+
+    private LoginResponse authenticateUser(LoginRequest loginRequest, User user) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()));
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
             String jwtToken = jwtTokenUtil.generateToken(userDetails);
-            String username = userDetails.getUsername();
             log.info("Token = {}", jwtToken);
 
-            User user = userRepo.findByUsername(username)
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException(String.format("Username: %s not found", username)));
-
-            return LoginResponse.builder().id(user.getId()).token(jwtToken).role(user.getRoles()).build();
+            return LoginResponse.builder()
+                    .id(user.getId())
+                    .token(jwtToken)
+                    .role(user.getRoles())
+                    .build();
 
         } catch (Exception ex) {
+            log.error("Authentication failed for {}. {}", loginRequest.getUsername(), ex.getMessage());
             throw new Exception(ex.getMessage());
         }
     }

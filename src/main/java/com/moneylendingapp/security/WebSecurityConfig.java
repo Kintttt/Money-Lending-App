@@ -1,6 +1,5 @@
 package com.moneylendingapp.security;
 
-import com.moneylendingapp.security.jwt.JwtConfig;
 import com.moneylendingapp.security.jwt.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.SecretKey;
 
 
 @Configuration
@@ -25,9 +22,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
-    private final JwtConfig jwtConfig;
-    private final SecretKey secretKey;
-    private final PasswordEncoder passwordEncoder;
 
 
     @Override
