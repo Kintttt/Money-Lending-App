@@ -13,7 +13,6 @@ import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,12 +31,9 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private JwtUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtTokenUtil;
 
 
     @Override
@@ -81,22 +77,32 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
+
+        User user = userRepo.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(String.format("Username: %s not found", loginRequest.getUsername())));
+
+        return authenticateUser(loginRequest, user);
+    }
+
+    private LoginResponse authenticateUser(LoginRequest loginRequest, User user) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()));
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
             String jwtToken = jwtTokenUtil.generateToken(userDetails);
-            String username = userDetails.getUsername();
             log.info("Token = {}", jwtToken);
 
-            User user = userRepo.findByUsername(username)
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException(String.format("Username: %s not found", username)));
-
-            return LoginResponse.builder().id(user.getId()).token(jwtToken).role(user.getRoles()).build();
+            return LoginResponse.builder()
+                    .id(user.getId())
+                    .token(jwtToken)
+                    .role(user.getRoles())
+                    .build();
 
         } catch (Exception ex) {
+            log.error("Authentication failed for {}. {}", loginRequest.getUsername(), ex.getMessage());
             throw new Exception(ex.getMessage());
         }
     }

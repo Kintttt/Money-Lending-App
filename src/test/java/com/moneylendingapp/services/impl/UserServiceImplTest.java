@@ -6,19 +6,19 @@ import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.repositories.UserRepository;
+import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,11 +31,18 @@ class UserServiceImplTest {
     private DefaultUserService userServiceTest;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private UserDetailsService userDetailsService;
+    @Mock
+    private JwtUtil jwtTokenUtil;
 
 
     @BeforeEach
     void setUp() {
-        userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder);
+        userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder
+                , authenticationManager, userDetailsService, jwtTokenUtil);
         mockedUser = TestUtil.mockedUser();
         signUpRequest  = TestUtil.newUserRequest();
         passwordEncoder  = new BCryptPasswordEncoder();
