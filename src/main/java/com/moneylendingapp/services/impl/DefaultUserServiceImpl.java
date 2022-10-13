@@ -8,6 +8,7 @@ import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Role;
 import com.moneylendingapp.exceptions.BadRequestException;
+import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
