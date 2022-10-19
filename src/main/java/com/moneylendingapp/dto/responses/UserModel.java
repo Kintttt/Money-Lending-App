@@ -1,6 +1,8 @@
 package com.moneylendingapp.dto.responses;
 
+import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Gender;
+import com.moneylendingapp.enums.Role;
 import lombok.*;
 import java.util.Date;
 
@@ -29,5 +31,7 @@ public class UserModel {
 
     private String address;
 
-    private String employmentStatus;
+    private EmploymentStatus employmentStatus;
+
+    private Role role;
 }

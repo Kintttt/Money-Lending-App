@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     private EmploymentStatus employmentStatus;
 
     @Enumerated(EnumType.STRING)
-    private Role roles;
+    private Role role;
 
 
 }

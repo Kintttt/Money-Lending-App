@@ -12,6 +12,7 @@ import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.DefaultUserService;
+import com.moneylendingapp.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,22 +53,12 @@ public class DefaultUserServiceImpl implements DefaultUserService {
                     .firstName(signUpDto.getFirstName())
                     .lastName(signUpDto.getLastName())
                     .password(encodedPassword)
-                    .roles(Role.USER)
+                    .role(Role.USER)
                     .build();
 
             userRepo.save(user);
 
-        return UserModel.builder()
-                .id(user.getId())
-                .username(signUpDto.getUsername())
-                .address(signUpDto.getAddress())
-                .dob(signUpDto.getDob())
-                .email(signUpDto.getEmail())
-                .employmentStatus(signUpDto.getEmploymentStatus())
-                .firstName(signUpDto.getFirstName())
-                .lastName(signUpDto.getLastName())
-                .gender(signUpDto.getGender())
-                .build();
+        return Converter.userModelBuilder(user);
     }
 
     private void ensureUsernameIsUnique(String username) {
@@ -77,7 +68,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) throws Exception {
+    public LoginResponse login(LoginRequest loginRequest) {
 
         User user = userRepo.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() ->
@@ -86,7 +77,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
         return authenticateUser(loginRequest, user);
     }
 
-    private LoginResponse authenticateUser(LoginRequest loginRequest, User user) throws Exception {
+    private LoginResponse authenticateUser(LoginRequest loginRequest, User user) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -94,27 +85,30 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
             String jwtToken = jwtTokenUtil.generateToken(userDetails);
-            log.info("Token = {}", jwtToken);
+
+            log.info("token: {}", jwtToken);
 
             return LoginResponse.builder()
                     .id(user.getId())
                     .token(jwtToken)
-                    .role(user.getRoles())
+                    .role(user.getRole())
                     .build();
 
         } catch (Exception ex) {
             log.error("Authentication failed for {}. {}", loginRequest.getUsername(), ex.getMessage());
-            throw new Exception(ex.getMessage());
+            throw new UserNotFoundException(ex.getMessage());
         }
     }
 
     public User getLoggedInUser(){
+        String loggedInUser = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
-        return userRepo.findByUsername(
-                SecurityContextHolder.getContext()
-                        .getAuthentication()
-                        .getName()).orElseThrow(()
-                -> new BadRequestException("No logged in user found"));
+        return userRepo.findByUsername(loggedInUser)
+                .orElseThrow(()
+                -> new UserNotFoundException("No logged in user found"));
     }
 
 }

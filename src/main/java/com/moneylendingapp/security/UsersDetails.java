@@ -1,5 +1,6 @@
-package com.moneylendingapp.entities;
+package com.moneylendingapp.security;
 
+import com.moneylendingapp.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,7 @@ public class UsersDetails implements UserDetails {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.authorities = Collections.singletonList(
-                new SimpleGrantedAuthority(user.getRoles().name()));
+                new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     @Override
