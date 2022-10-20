@@ -8,17 +8,16 @@ import com.moneylendingapp.dto.responses.LoginResponse;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
-import com.moneylendingapp.services.DefaultUserService;
 import com.moneylendingapp.services.impl.DefaultUserServiceImpl;
+import com.moneylendingapp.services.impl.UserDetailsServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Optional;
 
 @SpringBootTest(
@@ -37,23 +36,30 @@ public class UserLoginIntegrationTest {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private JwtUtil jwtTokenUtil;
 
-    private DefaultUserService userServiceTest;
+    private DefaultUserServiceImpl userServiceTest;
+    private SignUpRequest signUpRequest;
 
     @BeforeEach
     void setUp() {
         userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder,
                 authenticationManager, userDetailsService, jwtTokenUtil);
-        SignUpRequest signUpRequest = TestUtil.newUserRequest();
+        signUpRequest = TestUtil.newUserRequest();
         userServiceTest.createUser(signUpRequest);
         loginRequest = TestUtil.loginRequest();
     }
 
+    @AfterEach
+    void tearDown() {
+        Optional<User> user = userRepoTest.findByUsername(signUpRequest.getUsername());
+        userRepoTest.delete(user.get());
+    }
+
     @Test
-    void shouldSuccessfullyLoginUser() throws Exception {
+    void shouldSuccessfullyLoginUser() {
 
         Optional<User> optionalUser = userRepoTest.findByUsername(loginRequest.getUsername());
         LoginResponse loginResponse = userServiceTest.login(loginRequest);
