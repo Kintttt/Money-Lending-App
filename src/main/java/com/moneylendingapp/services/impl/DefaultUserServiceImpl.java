@@ -10,8 +10,9 @@ import com.moneylendingapp.enums.Role;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.UserRepository;
+import com.moneylendingapp.security.UserDetailsImpl;
 import com.moneylendingapp.security.jwt.JwtUtil;
-import com.moneylendingapp.services.DefaultUserService;
+import com.moneylendingapp.services.UserService;
 import com.moneylendingapp.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultUserServiceImpl implements DefaultUserService {
+public class DefaultUserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
@@ -89,7 +92,7 @@ public class DefaultUserServiceImpl implements DefaultUserService {
             log.info("token: {}", jwtToken);
 
             return LoginResponse.builder()
-                    .id(user.getId())
+                    .userId(user.getId())
                     .token(jwtToken)
                     .role(user.getRole())
                     .build();
@@ -109,6 +112,16 @@ public class DefaultUserServiceImpl implements DefaultUserService {
         return userRepo.findByUsername(loggedInUser)
                 .orElseThrow(()
                 -> new UserNotFoundException("No logged in user found"));
+    }
+
+    public UserModel userDetails(Principal principal) {
+
+        String username = principal.getName();
+        User user1 = userRepo.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("didn't work")
+        );
+
+        return Converter.userModelBuilder(user1);
     }
 
 }

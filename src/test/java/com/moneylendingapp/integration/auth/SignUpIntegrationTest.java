@@ -7,7 +7,7 @@ import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
-import com.moneylendingapp.services.DefaultUserService;
+import com.moneylendingapp.services.UserService;
 import com.moneylendingapp.services.impl.DefaultUserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class SignUpIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private DefaultUserService userServiceTest;
+    private UserService userServiceTest;
 
 
 

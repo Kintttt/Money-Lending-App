@@ -2,26 +2,28 @@ package com.moneylendingapp.security;
 
 import com.moneylendingapp.entities.User;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
-public class UsersDetails implements UserDetails {
+@Data
+public class UserDetailsImpl implements UserDetails {
 
     private final String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
 
-    public UsersDetails(User user) {
+    public UserDetailsImpl(User user) {
         this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.authorities = Collections.singletonList(
+        this.password = null;
+        this.authorities = List.of(
                 new SimpleGrantedAuthority(user.getRole().name()));
     }
 

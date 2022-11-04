@@ -56,11 +56,12 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims,String subject){
 
+        System.out.println(jwtConfig.getExpiryDuration());
         return Jwts.builder().setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now()
-                        .plusDays(jwtConfig.getTokenExpirationAfterDays())))
+                        .plusDays(jwtConfig.getExpiryDuration())))
                 .signWith(SignatureAlgorithm.HS256,jwtConfig.getSecretKey())
                 .compact();
     }

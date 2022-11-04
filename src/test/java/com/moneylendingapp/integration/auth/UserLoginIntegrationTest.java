@@ -67,7 +67,7 @@ public class UserLoginIntegrationTest {
         Assertions.assertTrue(optionalUser.isPresent());
         User user = optionalUser.get();
 
-        Assertions.assertEquals(user.getId(), loginResponse.getId());
+        Assertions.assertEquals(user.getId(), loginResponse.getUserId());
         Assertions.assertEquals(jwtTokenUtil.extractUsername(loginResponse.getToken()), user.getUsername());
 
     }

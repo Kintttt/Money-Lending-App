@@ -9,7 +9,7 @@ import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.Role;
 import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.repositories.UserRepository;
-import com.moneylendingapp.security.UsersDetails;
+import com.moneylendingapp.security.UserDetailsImpl;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +62,7 @@ class DefaultUserServiceImplTest {
         signUpRequest = TestUtil.newUserRequest();
         loginRequest = TestUtil.loginRequest();
         mockedUser = TestUtil.mockedUser();
-        usersDetails = new UsersDetails(mockedUser);
+        usersDetails = new UserDetailsImpl(mockedUser);
     }
 
     @Test
