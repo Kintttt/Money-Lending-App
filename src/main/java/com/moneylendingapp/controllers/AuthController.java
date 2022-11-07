@@ -1,8 +1,10 @@
 package com.moneylendingapp.controllers;
 
+import com.moneylendingapp.dto.requests.LoginRequest;
 import com.moneylendingapp.dto.requests.SignUpRequest;
+import com.moneylendingapp.dto.responses.LoginResponse;
 import com.moneylendingapp.dto.responses.UserModel;
-import com.moneylendingapp.services.DefaultUserService;
+import com.moneylendingapp.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -14,11 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final DefaultUserService userService;
+    private final UserService userService;
+
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel registerUser(@Validated @RequestBody SignUpRequest signUp) {
         return userService.createUser(signUp);
     }
+
+    @PostMapping("/login")
+    @ResponseStatus(value = HttpStatus.OK)
+    public LoginResponse login(@RequestBody @Validated LoginRequest loginRequest) throws Exception {
+        return userService.login(loginRequest);
+    }
+
 }

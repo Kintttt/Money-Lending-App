@@ -39,4 +39,18 @@
     <changeSet id="1662472058463" author="temitope">
         <modifyDataType tableName="users" columnName="employment_status" newDataType="VARCHAR(30)"/>
     </changeSet>
+
+
+
+    <changeSet id="20" author="temitope">
+        <preConditions>
+            <not>
+                <columnExists tableName="users" columnName="role"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="users">
+            <column name="role" type="VARCHAR(25)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
