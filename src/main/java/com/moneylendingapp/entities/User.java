@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean isEmailVerified;
+    private Boolean isEmailVerified;
 
     private LocalDateTime dateEmailVerified;
 

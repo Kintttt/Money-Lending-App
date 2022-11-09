@@ -7,6 +7,7 @@ import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.ConfirmationTokenRepository;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.services.ConfirmationTokenService;
+import com.moneylendingapp.util.ApplicationPropertyConfig;
 import com.moneylendingapp.util.EmailBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     private final EmailSender emailService;
     private final UserRepository userRepo;
     private final EmailBuilder emailBuilder;
+    private final ApplicationPropertyConfig appConfig;
 
 
     @Override
@@ -35,14 +37,14 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         ConfirmationToken confirmationToken = ConfirmationToken.builder()
                 .userId(user.getId())
                 .id(token)
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .expiresAt(LocalDateTime.now().plusMinutes(appConfig.getTokenExpireAfter()))
                 .build();
 
         ConfirmationToken db = tokenRepo.save(confirmationToken);
 
         String tokenId = String.valueOf(db.getId());
 
-        String link = "http://localhost:8082/api/v1/auth/confirm?token=" + tokenId;
+        String link = appConfig.getTokenVerificationLink() + tokenId;
 
         emailService.send(
                 user.getEmail(),
@@ -78,7 +80,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         confirmationToken.setConfirmedAt(LocalDateTime.now());
         tokenRepo.save(confirmationToken);
 
-        user.setEmailVerified(true);
+        user.setIsEmailVerified(true);
         user.setDateEmailVerified(LocalDateTime.now());
 
         System.out.println(confirmationToken.getConfirmedAt() + " is confirmation time");
