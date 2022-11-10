@@ -29,10 +29,10 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
 
     @Override
-    public void saveToken(User user) {
+    public void sendConfirmationToken(User user) {
 
         String token = UUID.randomUUID().toString();
-        log.info("Token: " + token);
+        log.info("Confirmation Token: " + token);
 
         ConfirmationToken confirmationToken = ConfirmationToken.builder()
                 .userId(user.getId())
@@ -41,9 +41,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
                 .build();
 
         ConfirmationToken db = tokenRepo.save(confirmationToken);
-
         String tokenId = String.valueOf(db.getId());
-
         String link = appConfig.getTokenVerificationLink() + tokenId;
 
         emailService.send(
@@ -80,7 +78,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         confirmationToken.setConfirmedAt(LocalDateTime.now());
         tokenRepo.save(confirmationToken);
 
-        user.setIsEmailVerified(true);
+        user.setEmailVerified(true);
         user.setDateEmailVerified(LocalDateTime.now());
 
         System.out.println(confirmationToken.getConfirmedAt() + " is confirmation time");

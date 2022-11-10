@@ -13,5 +13,6 @@ public interface UserService {
     ApiResponseEnvelope confirmToken(String token);
     LoginResponse login(LoginRequest request) throws Exception;
     UserModel userDetails(Principal principal);
+    ApiResponseEnvelope resendConfirmationToken();
 }
 

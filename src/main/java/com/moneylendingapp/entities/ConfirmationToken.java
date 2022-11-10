@@ -26,10 +26,4 @@ public class ConfirmationToken {
 
     @TimeToLive
     private Long expiration= 900L;
-
-    /** TODO
-     * encrypt token sent
-     *
-     */
-
 }

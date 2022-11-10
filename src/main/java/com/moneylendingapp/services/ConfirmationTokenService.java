@@ -6,7 +6,7 @@ import com.moneylendingapp.entities.User;
 
 public interface ConfirmationTokenService {
 
-    void saveToken(User user);
+    void sendConfirmationToken(User user);
 
     ApiResponseEnvelope confirmToken(String token);
 

@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -62,10 +63,8 @@ public class UserServiceImpl implements UserService {
                     .role(Role.USER)
                     .build();
 
-            userRepo.save(user);
-
-
-        tokenService.saveToken(user);
+        userRepo.save(user);
+        tokenService.sendConfirmationToken(user);
         return Converter.userModelBuilder(user);
     }
 
@@ -131,6 +130,21 @@ public class UserServiceImpl implements UserService {
         );
 
         return Converter.userModelBuilder(user1);
+    }
+
+    @Override
+    public ApiResponseEnvelope resendConfirmationToken() {
+        User user = getLoggedInUser();
+
+        if(user.isEmailVerified()) {
+            throw new BadRequestException("Email already verified");
+        }
+        tokenService.sendConfirmationToken(user);
+        return ApiResponseEnvelope.builder()
+                .successStatus(true)
+                .responseDate(LocalDateTime.now())
+                .result("Confirmation mail resent. Please check your registered email")
+                .build();
     }
 
 }

@@ -61,7 +61,7 @@
         </preConditions>
 
         <addColumn tableName="users">
-            <column name="is_email_verified" type="BIT"/>
+            <column name="is_email_verified" type="BIT" defaultValueBoolean="false"/>
             <column name="date_email_verified" type="datetime"/>
         </addColumn>
     </changeSet>
