@@ -1,21 +1,23 @@
 package com.moneylendingapp.services.impl;
 
+import com.moneylendingapp.advice.ApiResponseEnvelope;
 import com.moneylendingapp.dto.requests.LoginRequest;
+import com.moneylendingapp.dto.responses.UserModel;
+import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.dto.requests.SignUpRequest;
 import com.moneylendingapp.dto.responses.LoginResponse;
-import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.entities.User;
 import com.moneylendingapp.enums.EmploymentStatus;
 import com.moneylendingapp.enums.Role;
-import com.moneylendingapp.exceptions.BadRequestException;
 import com.moneylendingapp.exceptions.UserNotFoundException;
 import com.moneylendingapp.repositories.UserRepository;
-import com.moneylendingapp.security.UserDetailsImpl;
-import com.moneylendingapp.security.jwt.JwtUtil;
+import com.moneylendingapp.services.ConfirmationTokenService;
 import com.moneylendingapp.services.UserService;
-import com.moneylendingapp.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.moneylendingapp.security.jwt.JwtUtil;
+import com.moneylendingapp.util.Converter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,18 +26,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultUserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ConfirmationTokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtTokenUtil;
@@ -59,8 +63,8 @@ public class DefaultUserServiceImpl implements UserService {
                     .role(Role.USER)
                     .build();
 
-            userRepo.save(user);
-
+        userRepo.save(user);
+        tokenService.sendConfirmationToken(user);
         return Converter.userModelBuilder(user);
     }
 
@@ -71,6 +75,10 @@ public class DefaultUserServiceImpl implements UserService {
     }
 
     @Override
+    public ApiResponseEnvelope confirmToken(String token) {
+        return tokenService.confirmToken(token);
+    }
+
     public LoginResponse login(LoginRequest loginRequest) {
 
         User user = userRepo.findByUsername(loginRequest.getUsername())
@@ -122,6 +130,21 @@ public class DefaultUserServiceImpl implements UserService {
         );
 
         return Converter.userModelBuilder(user1);
+    }
+
+    @Override
+    public ApiResponseEnvelope resendConfirmationToken() {
+        User user = getLoggedInUser();
+
+        if(user.isEmailVerified()) {
+            throw new BadRequestException("Email already verified");
+        }
+        tokenService.sendConfirmationToken(user);
+        return ApiResponseEnvelope.builder()
+                .successStatus(true)
+                .responseDate(LocalDateTime.now())
+                .result("Confirmation mail resent. Please check your registered email")
+                .build();
     }
 
 }

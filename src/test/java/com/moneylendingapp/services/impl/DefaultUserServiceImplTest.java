@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultUserServiceImplTest {
+class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepo;
@@ -51,7 +51,7 @@ class DefaultUserServiceImplTest {
     private UserDetails usersDetails;
 
     @InjectMocks
-    private DefaultUserServiceImpl userService;
+    private UserServiceImpl userService;
 
     private SignUpRequest signUpRequest;
     private LoginRequest loginRequest;

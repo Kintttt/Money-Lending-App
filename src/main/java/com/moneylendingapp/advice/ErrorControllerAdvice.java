@@ -61,17 +61,16 @@ public class ErrorControllerAdvice {
         return buildErrorResponse(ex.getMessage());
     }
 
-
-    @ExceptionHandler(value = BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponseEnvelope handleBadRequest(BadRequestException ex) {
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponseEnvelope handleUserNotFoundException(UserNotFoundException ex) {
         log.error(ex.getMessage());
         return buildErrorResponse(ex.getMessage());
     }
 
-    @ExceptionHandler(value = UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponseEnvelope handleUserNotFound(UserNotFoundException ex) {
+    @ExceptionHandler(value = BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponseEnvelope handleBadRequest(BadRequestException ex) {
         log.error(ex.getMessage());
         return buildErrorResponse(ex.getMessage());
     }

@@ -53,4 +53,16 @@
             <column name="role" type="VARCHAR(25)"/>
         </addColumn>
     </changeSet>
+
+
+    <changeSet id="1664733485603" author="temitope">
+        <preConditions>
+                <tableExists tableName="users"/>
+        </preConditions>
+
+        <addColumn tableName="users">
+            <column name="is_email_verified" type="BIT" defaultValueBoolean="false"/>
+            <column name="date_email_verified" type="datetime"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -56,7 +56,6 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims,String subject){
 
-        System.out.println(jwtConfig.getExpiryDuration());
         return Jwts.builder().setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))

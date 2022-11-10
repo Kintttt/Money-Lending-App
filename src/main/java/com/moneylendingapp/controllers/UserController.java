@@ -1,10 +1,9 @@
 package com.moneylendingapp.controllers;
+import com.moneylendingapp.advice.ApiResponseEnvelope;
 import com.moneylendingapp.dto.responses.UserModel;
 import com.moneylendingapp.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -18,5 +17,10 @@ public class UserController {
     @GetMapping
     public UserModel getUserDetails(Principal user) {
         return userService.userDetails(user);
+    }
+
+    @PostMapping("/resend-confirmation-token")
+    public ApiResponseEnvelope resendConfirmationToken() {
+        return userService.resendConfirmationToken();
     }
 }

@@ -8,7 +8,7 @@ import com.moneylendingapp.entities.User;
 import com.moneylendingapp.repositories.UserRepository;
 import com.moneylendingapp.security.jwt.JwtUtil;
 import com.moneylendingapp.services.UserService;
-import com.moneylendingapp.services.impl.DefaultUserServiceImpl;
+import com.moneylendingapp.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class SignUpIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        userServiceTest = new DefaultUserServiceImpl(userRepoTest, passwordEncoder,
+        userServiceTest = new UserServiceImpl(userRepoTest, passwordEncoder,
                 authenticationManager, userDetailsService, jwtTokenUtil);
         signUpRequest  = TestUtil.newUserRequest();
     }
